@@ -103,3 +103,14 @@ theme: hydrogen
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: ''
+
+# 使用 markdown-it 渲染引擎的配置
+markdown:
+  render:
+    html: true          # 允许 HTML 标签
+    xhtmlOut: false
+    breaks: true        # 转换换行符为 <br>
+    linkify: true       # 自动识别链接
+    typographer: true
+  plugins:
+    - markdown-it-mathjax3   # 启用 mathjax3 插件
