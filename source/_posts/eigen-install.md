@@ -1,10 +1,11 @@
 ---
 title: Eigen安装
 date: 2026-02-28 12:01:46
-tags:
-categories:
-  - C++
+tags: 
   - Eigen
+categories:
+  - [C++, Eigen]
+
 ---
 
 # 简介

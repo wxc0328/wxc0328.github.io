@@ -1,0 +1,217 @@
+<!-- categories-fixed.ejs -->
+<div class="categories-tree-container">
+  <% 
+    // 手动构建分类树
+    function buildCategoryTree() {
+      const tree = [];
+      const categoryMap = new Map();
+      
+      // 首先，将所有分类放入 map
+      site.categories.each(function(cat) {
+        categoryMap.set(cat.name, {
+          ...cat,
+          children: []
+        });
+      });
+      
+      // 手动定义层级关系（因为自动的层级可能没建立）
+      const hierarchy = {
+        'C++': ['Eigen'],
+        // 可以在这里添加其他手动定义的层级关系
+        // '编程语言': ['JavaScript', 'Python']
+      };
+      
+      // 根据手动定义构建树
+      Object.keys(hierarchy).forEach(parentName => {
+        const parent = categoryMap.get(parentName);
+        if (parent) {
+          hierarchy[parentName].forEach(childName => {
+            const child = categoryMap.get(childName);
+            if (child) {
+              parent.children.push(child);
+              categoryMap.delete(childName); // 从顶级分类中移除
+            }
+          });
+          tree.push(parent);
+          categoryMap.delete(parentName);
+        }
+      });
+      
+      // 添加剩余的顶级分类
+      categoryMap.forEach((cat, name) => {
+        // 检查是否已经是某个分类的子分类
+        let isChild = false;
+        tree.forEach(parent => {
+          if (parent.children.some(c => c.name === name)) {
+            isChild = true;
+          }
+        });
+        
+        if (!isChild) {
+          tree.push(cat);
+        }
+      });
+      
+      return tree;
+    }
+    
+    const categoryTree = buildCategoryTree();
+  %>
+  
+  <% if (categoryTree.length) { %>
+    <ul class="categories-tree-root">
+      <% categoryTree.forEach(function(category) { %>
+        <%= renderCategoryNode(category, 0) %>
+      <% }); %>
+    </ul>
+  <% } else { %>
+    <p class="no-categories">暂无分类</p>
+  <% } %>
+</div>
+
+<% function renderCategoryNode(category, level) { %>
+  <% 
+    const postCount = category.posts ? category.posts.length : 0;
+    const levelClass = level === 0 ? 'level-0' : `level-${level}`;
+    
+    // 获取正确路径
+    let categoryUrl;
+    if (category.path) {
+      categoryUrl = url_for(category.path);
+    } else {
+      const slug = category.slug || encodeURIComponent(category.name);
+      categoryUrl = url_for(`/categories/${slug}/`);
+    }
+  %>
+  
+  <li class="category-item <%= levelClass %>" data-level="<%= level %>">
+    <div class="category-content">
+      <% if (category.children && category.children.length > 0) { %>
+        <span class="toggle-icon expanded" onclick="toggleCategory(this)">▼</span>
+      <% } else { %>
+        <span class="toggle-icon-placeholder"></span>
+      <% } %>
+      
+      <a href="<%= categoryUrl %>" class="category-link">
+        <%= category.name %>
+        <% if (postCount > 0) { %>
+          <span class="post-count">(<%= postCount %>)</span>
+        <% } %>
+      </a>
+    </div>
+    
+    <% if (category.children && category.children.length > 0) { %>
+      <ul class="category-children">
+        <% category.children.forEach(function(child) { %>
+          <%= renderCategoryNode(child, level + 1) %>
+        <% }); %>
+      </ul>
+    <% } %>
+  </li>
+<% } %>
+
+<style>
+/* 样式保持不变 */
+.categories-tree-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.categories-tree-root,
+.category-children {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.category-children {
+  margin-left: 24px;
+  border-left: 1px dashed #e0e0e0;
+  padding-left: 12px;
+}
+
+.category-item {
+  margin: 4px 0;
+  line-height: 1.6;
+}
+
+.category-item.level-0 .category-content { margin-left: 0; }
+.category-item.level-1 .category-content { margin-left: 24px; }
+.category-item.level-2 .category-content { margin-left: 48px; }
+.category-item.level-3 .category-content { margin-left: 72px; }
+
+.category-content {
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.category-content:hover {
+  background-color: #f0f0f0;
+}
+
+.toggle-icon {
+  cursor: pointer;
+  margin-right: 8px;
+  font-size: 12px;
+  color: #666;
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.toggle-icon.expanded { transform: rotate(0deg); }
+.toggle-icon.collapsed { transform: rotate(-90deg); }
+
+.toggle-icon-placeholder {
+  width: 24px;
+  height: 16px;
+  display: inline-block;
+}
+
+.category-link {
+  color: #2c3e50;
+  text-decoration: none;
+  font-size: 15px;
+  flex: 1;
+  padding: 2px 0;
+}
+
+.category-link:hover { color: #3498db; }
+
+.post-count {
+  color: #95a5a6;
+  font-size: 13px;
+  margin-left: 6px;
+  font-weight: normal;
+}
+</style>
+
+<script>
+function toggleCategory(element) {
+  element.classList.toggle('expanded');
+  element.classList.toggle('collapsed');
+  
+  const categoryItem = element.closest('.category-item');
+  const childrenList = categoryItem.querySelector(':scope > .category-children');
+  
+  if (childrenList) {
+    childrenList.style.display = childrenList.style.display === 'none' ? 'block' : 'none';
+  }
+  event.stopPropagation();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.category-children').forEach(function(list) {
+    list.style.display = 'block';
+  });
+});
+</script>

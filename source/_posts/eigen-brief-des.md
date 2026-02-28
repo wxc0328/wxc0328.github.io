@@ -3,8 +3,7 @@ title: Eigen编程简述以及关键宏
 date: 2026-02-28 12:06:46
 tags:
 categories:
-  - C++
-  - Eigen
+  - [C++, Eigen]
 ---
 
 # 基本概念
