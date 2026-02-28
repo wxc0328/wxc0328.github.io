@@ -1731,7 +1731,10 @@ a.tree-label:hover {
   background-color: var(--code-bg);
   border: 1px solid var(--code-border);
   border-radius: var(--radius-md);
-  overflow: hidden;
+  overflow-x: auto;        /* 允许水平滚动 */
+  overflow-y: hidden;      /* 隐藏垂直滚动 */
+  display: block;          /* 确保块级显示 */
+  width: 100%;             /* 宽度100%，但溢出会滚动 */
 }
 
 .markdown-body figure.highlight pre {
@@ -1758,7 +1761,9 @@ a.tree-label:hover {
 }
 
 .markdown-body figure.highlight .code {
-  width: 100%;
+  width: auto;             /* 改为 auto，让内容决定宽度 */
+  min-width: 100%;         /* 至少占满容器，但可以更宽 */
+  display: inline-block;   /* 根据内容调整宽度 */
 }
 
 .markdown-body figure.highlight .code pre {
