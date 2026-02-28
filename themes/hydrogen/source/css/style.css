@@ -1803,6 +1803,49 @@ a.tree-label:hover {
   box-shadow: var(--shadow-sm);
 }
 
+/* ===== 代码块语言标签显示（左上角，浅色无背景） ===== */
+.markdown-body figure.highlight,
+.markdown-body pre {
+  position: relative;  /* 为绝对定位提供参考 */
+}
+
+/* 语言标签样式 - 左上角，浅色无背景 */
+.markdown-body figure.highlight::before,
+.markdown-body pre::before {
+  content: attr(data-language);  /* 从 data-language 属性获取语言名称 */
+  position: absolute;
+  top: 0.5em;                    /* 距离顶部0.5em */
+  left: 0.8em;                   /* 距离左侧0.8em - 左上角 */
+  padding: 0.1em 0.4em;          /* 极小内边距 */
+  font-family: var(--font-mono);
+  font-size: 0.75rem;            /* 小字号 */
+  font-weight: 400;              /* 正常字重 */
+  color: var(--text-muted);      /* 使用淡色文本变量 */
+  background-color: transparent;  /* 完全透明背景 */
+  border: none;                  /* 无边框 */
+  border-radius: 0;              /* 无圆角 */
+  letter-spacing: 0.3px;
+  text-transform: lowercase;      /* 小写显示，更柔和 */
+  opacity: 0.7;                   /* 轻微透明 */
+  z-index: 5;
+  pointer-events: none;           /* 防止遮挡点击 */
+  line-height: 1.2;
+}
+
+/* 隐藏 plaintext 标签 */
+.markdown-body figure.highlight[data-language="plaintext"]::before,
+.markdown-body pre[data-language="plaintext"]::before {
+  display: none;
+}
+
+/* 如果代码块没有指定语言，不显示标签 */
+.markdown-body figure.highlight[data-language=""]::before,
+.markdown-body pre:not([data-language])::before,
+.markdown-body figure.highlight:not([data-language])::before,
+.markdown-body pre[data-language=""]::before {
+  display: none;
+}
+
 /* ===== 响应式样式 ===== */
 @media (max-width: 1279px) {
   .doc-toc {

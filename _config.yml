@@ -45,11 +45,16 @@ relative_link: false
 future: true
 syntax_highlighter: highlight.js
 highlight:
-  line_number: true
-  auto_detect: false
-  tab_replace: ''
+  enable: true
+  auto_detect: false        # 建议关闭自动检测，手动指定语言
+  line_number: false        # 我们之前已经隐藏了行号，这里也关闭
+  line_threshold: 0
+  tab_replace: '  '
+  exclude_languages: 
+    - example
   wrap: true
-  hljs: false
+  hljs: true                # 关键！让 class 带有 hljs- 前缀，方便应用主题
+  language_attr: true       # 启用语言属性
 prismjs:
   preprocess: true
   line_number: true
