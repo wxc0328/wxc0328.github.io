@@ -89,7 +89,7 @@
       </svg>
       <% 
         // 如果是层级分类，显示完整路径
-        if (post.categories.length === 1 && post.categories[0].children) {
+        if (post.categories.length === 1 && post.categories[0]?.children) {
           // 处理层级分类
           const category = post.categories[0];
           const path = [];

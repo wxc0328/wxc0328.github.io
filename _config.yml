@@ -73,6 +73,7 @@ index_generator:
 default_category: uncategorized
 category_map:
   'C++': 'Cpp'
+  '笔记工具': 'Note_tools'
 tag_map:
 
 # Metadata elements
