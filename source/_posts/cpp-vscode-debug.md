@@ -94,4 +94,4 @@ categories:
     ]
 }
 ```
-从python脚本处启动调试，即可同时应用C++和Python的断点。
+打开python脚本，然后在左侧的调试项中选择`Python C++ Debug`启动调试，即可同时应用C++和Python的断点。
